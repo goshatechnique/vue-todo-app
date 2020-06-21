@@ -1,32 +1,41 @@
 <template>
   <div class="container">
     <Header />
+    <Logo />
     <router-view />
   </div>
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import Header from "./components/Header";
+import Logo from "./components/Logo";
 export default {
   name: "App",
   components: {
-    Header
+    Header,
+    Logo
+  },
+  methods: {
+    ...mapActions(["fetchTaskById"])
   }
 };
 </script>
 
 <style lang="scss">
-$mainColorLightGreen: #c7ebdf;
-$mainColorLightGreenLogo: #bae6d5;
-$mainColorWhite: #ffffff;
-$mainColorWhiteActive: #f9f7f8;
-$mainTextColor: #314252;
-$mainTextColorActive: #3fba83;
+$textColor: #314252;
+$whiteColor: #ffffff;
+$grayColorLight: #eeeeee;
+$grayColor: #e1e1e1;
+$grayColorDark: #757575;
+$greenColor: #3fba83;
+$greemColorLight: #bae6d5;
+$greemColorLight2: #c7ebdf;
 
 * {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Trebuchet MS";
   font-size: 20px;
-  color: $mainTextColor;
+  color: $textColor;
 }
 
 body {
@@ -35,14 +44,14 @@ body {
 }
 
 .container {
-  background: $mainColorWhite;
+  background: $whiteColor;
   width: 100%;
   height: 100vh;
   display: grid;
   grid-template-areas:
-    "header main"
+    "header logo"
     "header main";
-  grid-template-columns: 200px 1fr;
-  grid-template-rows: 1fr;
+  grid-template-columns: 250px 1fr;
+  grid-template-rows: 70px 1fr;
 }
 </style>
