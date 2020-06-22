@@ -2,7 +2,7 @@
   <div class="task-card">
     <PopupRemove
       v-bind:isPopupVisible="isPopupVisible"
-      v-bind:hidePopupEvent="hidePopupEvent"
+      v-bind:switchPopupVisible="switchPopupVisible"
       v-bind:callbackPopupEvent="callbackPopupEvent"
       v-bind:popupHeader="'Confirm Taks delete'"
       v-bind:popupMessage="'Are you sure you want delete task?'"
@@ -15,7 +15,7 @@
         alt="#"
         @click.native="fetchTaskByIdHandler(task.id)"
       >&#9998;</router-link>
-      <span @click="hidePopupEvent" class="task-card-btn btn-close">&times;</span>
+      <span @click="switchPopupVisible" class="task-card-btn btn-close">&times;</span>
     </div>
 
     <div class="task-card-title">
@@ -56,18 +56,18 @@ export default {
   },
   methods: {
     ...mapActions(["removeTask", "fetchTaskById"]),
-    deleteTask() {
-      this.removeTask(this.task.id);
-    },
     fetchTaskByIdHandler: function(id) {
       this.fetchTaskById(id);
     },
-    hidePopupEvent: function() {
+    deleteTask() {
+      this.removeTask(this.task.id);
+    },
+    switchPopupVisible: function() {
       this.isPopupVisible = !this.isPopupVisible;
     },
     callbackPopupEvent: function() {
       this.deleteTask();
-      this.hidePopupEvent();
+      this.switchPopupVisible();
     }
   },
   computed: {
@@ -88,8 +88,8 @@ $grayColorLight: #eeeeee;
 $grayColor: #e1e1e1;
 $grayColorDark: #757575;
 $greenColor: #3fba83;
-$greemColorLight: #bae6d5;
-$greemColorLight2: #c7ebdf;
+$greenColorLight: #bae6d5;
+$greenColorLight2: #c7ebdf;
 $redColor: #fc6f6f;
 
 .task-card {

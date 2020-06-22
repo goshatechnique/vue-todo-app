@@ -29,8 +29,8 @@ $grayColorLight: #eeeeee;
 $grayColor: #e1e1e1;
 $grayColorDark: #757575;
 $greenColor: #3fba83;
-$greemColorLight: #bae6d5;
-$greemColorLight2: #c7ebdf;
+$greenColorLight: #bae6d5;
+$greenColorLight2: #c7ebdf;
 
 * {
   font-family: "Trebuchet MS";

@@ -5,7 +5,7 @@
         <h2 class="popup-h2">{{this.popupHeader}}</h2>
         <p class="popup-p">{{this.popupMessage}}</p>
         <div class="popup-btn-section">
-          <button class="popup-btn popup-btn-cls" @click="hidePopupEvent">No</button>
+          <button class="popup-btn popup-btn-cls" @click="switchPopupVisible">No</button>
           <button class="popup-btn" @click="callbackPopupEvent">Yes</button>
         </div>
       </div>
@@ -18,16 +18,10 @@ export default {
   name: "popup",
   props: {
     isPopupVisible: Boolean,
-    hidePopupEvent: Function,
+    switchPopupVisible: Function,
     callbackPopupEvent: Function,
     popupHeader: String,
     popupMessage: String
-  },
-  methods: {
-    agreeEvent: function() {
-      this.agreeCallback();
-      this.hideEvent();
-    }
   }
 };
 </script>

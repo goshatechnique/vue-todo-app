@@ -1,22 +1,66 @@
 <template>
-  <div>
-    <h2>{{this.currentTask.title}}</h2>
-    <div v-for="(note, index) in this.notesList" :key="index">
-      <input type="text" v-model="currentTask[index].noteText" />
-      <span @click="removeNoteHandler(index)">&times;</span>
+  <div class="task-settings">
+    <Popup
+      v-bind:isPopupVisible="isPopupVisible"
+      v-bind:switchPopupVisible="switchPopupVisible"
+      v-bind:callbackPopupEvent="callbackPopupEvent"
+      v-bind:popupHeader="'Confirm Taks delete'"
+      v-bind:popupMessage="'Are you sure you want delete task?'"
+    />
+    <div class="task-settings-title">
+      <label for="title" class="task-settings-title-label">What is task name?</label>
+      <input
+        type="text"
+        placeholder="For example: Read"
+        id="title"
+        class="task-settings-title-input"
+        v-model="currentTask.title"
+      />
     </div>
-    <button @click="addNoteHandler">Add jeppa Handler</button>
+    <div class="task-settings-control-panel">
+      <button class="task-settings-control-panel-btn" @click="addNoteHandler">&crarr; Add note</button>
+      <button class="task-settings-control-panel-btn" @click="saveChanges">&#10003; Save</button>
+      <button
+        class="task-settings-control-panel-btn-dlt"
+        @click="switchPopupVisible"
+      >&#10006; Delete</button>
+    </div>
+    <div class="task-settings-notes">
+      <div class="task-settings-notes-item" v-for="(note, index) in this.notesList" :key="index">
+        <input
+          class="task-settings-notes-item-checkbox"
+          type="checkbox"
+          v-model="currentTask[index].noteStatus"
+        />
+        <input
+          class="task-settings-notes-item-input"
+          type="text"
+          v-model="currentTask[index].noteText"
+        />
+        <span
+          class="task-settings-notes-item-span"
+          type="text"
+          @click="removeNoteHandler(index)"
+        >&times;</span>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
+import Popup from "./Popup";
+import firebaseAPI from "../firebase";
 export default {
   name: "TaskSettings",
+  components: {
+    Popup
+  },
   data: function() {
     return {
       taskId: this.$route.path.substr(6),
-      deletedNotesId: []
+      deletedNotesId: [],
+      isPopupVisible: false
     };
   },
   computed: {
@@ -34,7 +78,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["fetchTaskById"]),
+    ...mapActions(["fetchTaskById", "removeTask"]),
     ...mapMutations(["addNote", "removeNote"]),
     addNoteHandler: function() {
       let parsedCurrentTask = JSON.parse(JSON.stringify(this.currentTask));
@@ -54,16 +98,41 @@ export default {
       }
       let newState = Object.assign(parsedCurrentTask, emptyNote);
       this.addNote(newState);
+      // let newState = Object.assign(parsedCurrentTask);
+      // newState[Object.keys(emptyNote)[0]] = emptyNote[Object.keys(emptyNote)];
+      // this.addNote(newState);
     },
     removeNoteHandler: function(id) {
       window.a = this.deletedNotesId;
       delete this.notesList[id];
       this.deletedNotesId.push(id);
-      // this.deletedNotesId.sort();
-      this.removeNote(this.notesList);
+      this.removeNote(
+        Object.assign(this.notesList, {
+          title: this.currentTask.title,
+          id: this.taskId
+        })
+      );
+    },
+    saveChanges: function() {
+      firebaseAPI
+        .database()
+        .ref(`tasks/${this.taskId}`)
+        .set(
+          Object.assign(this.notesList, {
+            title: this.currentTask.title,
+            id: this.taskId
+          })
+        );
+    },
+    switchPopupVisible: function() {
+      this.isPopupVisible = !this.isPopupVisible;
+    },
+    callbackPopupEvent: function() {
+      this.$router.push("/");
+      this.removeTask(this.currentTask.id);
     }
   },
-  mounted() {
+  created() {
     this.fetchTaskById(this.taskId);
   }
 };
@@ -76,6 +145,110 @@ $grayColorLight: #eeeeee;
 $grayColor: #e1e1e1;
 $grayColorDark: #757575;
 $greenColor: #3fba83;
-$greemColorLight: #bae6d5;
-$greemColorLight2: #c7ebdf;
+$greenColorLight: #79ccac;
+$greenColorLight2: #baebda;
+$redColor: #ff4e4e;
+
+.task-settings {
+  display: flex;
+  flex-direction: column;
+}
+
+.task-settings-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 20px;
+  padding-top: 10px;
+}
+
+.task-settings-title-label {
+  font-size: 1.2em;
+}
+
+.task-settings-title-input {
+  margin-left: 5px;
+  font-size: 1.2em;
+  outline: none;
+  border: 1px solid $grayColorDark;
+  border-radius: 3px;
+}
+
+.task-settings-title-button {
+  background: $redColor;
+  color: $whiteColor;
+  font-size: 0.9em;
+  height: 100%;
+  border: none;
+}
+
+.task-settings-control-panel {
+  display: flex;
+  justify-content: center;
+  padding-top: 10px;
+  padding-top: 10px;
+}
+
+.task-settings-control-panel-btn {
+  margin-left: 10px;
+  height: 36px;
+  width: 128px;
+  background: rgba($greenColor, 0.25);
+  color: $greenColor;
+  border: none;
+  border-bottom: 3px solid $greenColor;
+  transition: 0.2s;
+  border-radius: 3px;
+  &:hover {
+    cursor: pointer;
+    color: $whiteColor;
+    background: $greenColor;
+  }
+}
+
+.task-settings-control-panel-btn-dlt {
+  margin-left: 10px;
+  height: 36px;
+  width: 128px;
+  background: rgba($redColor, $alpha: 0.25);
+  color: $redColor;
+  border: none;
+  border-bottom: 3px solid $redColor;
+  transition: 0.2s;
+  border-radius: 3px;
+  &:hover {
+    cursor: pointer;
+    color: $whiteColor;
+    background: $redColor;
+  }
+}
+
+.task-settings-notes {
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.task-settings-notes-item {
+  box-sizing: border-box;
+  border-bottom: 1px solid $grayColorDark;
+  margin-bottom: 3px;
+  &-input {
+    border: none;
+    background: none;
+    outline: none;
+    width: 400px;
+  }
+  &-span {
+    font-size: 30px;
+    color: rgba($textColor, 0.5);
+    transition: 0.2s;
+    &:hover {
+      color: $redColor;
+      cursor: pointer;
+    }
+  }
+}
 </style>
