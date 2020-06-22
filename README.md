@@ -1,5 +1,9 @@
 # todo-app-vue
 
+## Aplication available on
+
+https://vue-todo-app-bf349.web.app/
+
 ## Project setup
 ```
 npm install
