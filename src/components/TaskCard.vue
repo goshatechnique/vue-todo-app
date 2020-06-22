@@ -14,8 +14,11 @@
         class="task-card-btn"
         alt="#"
         @click.native="fetchTaskByIdHandler(task.id)"
-      >&#9998;</router-link>
-      <span @click="switchPopupVisible" class="task-card-btn btn-close">&times;</span>
+        >&#9998;</router-link
+      >
+      <span @click="switchPopupVisible" class="task-card-btn btn-close"
+        >&times;</span
+      >
     </div>
 
     <div class="task-card-title">
@@ -23,39 +26,45 @@
     </div>
 
     <div class="task-card-notes">
-      <div v-for="(note, index) in notes" v-bind:key="index" class="task-card-notes-record">
+      <div
+        v-for="(note, index) in notes"
+        v-bind:key="index"
+        class="task-card-notes-record"
+      >
         <span
           class="task-card-notes-record"
           :class="{ finished: note.noteStatus }"
-        >{{note.noteText.trim()}}</span>
+          >{{ note.noteText.trim() }}</span
+        >
         <span
           class="task-card-notes-record-divider"
-          v-if="index < Object.keys(notes).length - 1 "
-        >&bull;</span>
+          v-if="index < Object.keys(notes).length - 1"
+          >&bull;</span
+        >
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions } from "vuex";
-import firebaseAPI from "../firebase";
-import PopupRemove from "./Popup";
+import { mapActions } from 'vuex';
+import firebaseAPI from '../firebase';
+import PopupRemove from './Popup';
 export default {
-  name: "TaskCard",
+  name: 'TaskCard',
   components: {
-    PopupRemove
+    PopupRemove,
   },
   data: function() {
     return {
-      isPopupVisible: false
+      isPopupVisible: false,
     };
   },
   props: {
-    task: Object
+    task: Object,
   },
   methods: {
-    ...mapActions(["removeTask", "fetchTaskById"]),
+    ...mapActions(['removeTask', 'fetchTaskById']),
     fetchTaskByIdHandler: function(id) {
       this.fetchTaskById(id);
     },
@@ -68,16 +77,16 @@ export default {
     callbackPopupEvent: function() {
       this.deleteTask();
       this.switchPopupVisible();
-    }
+    },
   },
   computed: {
     notes: function() {
       let notes = JSON.parse(JSON.stringify(this.task));
-      delete notes["id"];
-      delete notes["title"];
+      delete notes['id'];
+      delete notes['title'];
       return notes;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -97,6 +106,7 @@ $redColor: #fc6f6f;
   flex-direction: column;
   align-items: center;
   width: 100%;
+  min-width: 270px;
   background: $whiteColor;
   border-bottom: 1px solid $grayColor;
 }
@@ -140,6 +150,7 @@ $redColor: #fc6f6f;
   width: 100%;
   display: flex;
   justify-content: flex-start;
+  flex-wrap: wrap;
 }
 
 .task-card-title-text {

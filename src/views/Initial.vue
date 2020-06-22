@@ -4,37 +4,39 @@
       <TaskCard v-for="(task, index) in allTasks" :key="index" :task="task" />
     </transition-group>
     <TaskForm :isVisible="isVisible" :switchTaskForm="switchTaskForm" />
-    <button class="initial-btn-create-task" @click="switchTaskForm">Add task</button>
+    <button class="initial-btn-create-task" @click="switchTaskForm">
+      Add task
+    </button>
   </div>
 </template>
 
 <script>
-import TaskForm from "../components/TaskForm";
-import TaskCard from "../components/TaskCard";
-import { mapGetters, mapActions } from "vuex";
+import TaskForm from '../components/TaskForm';
+import TaskCard from '../components/TaskCard';
+import { mapGetters, mapActions } from 'vuex';
 export default {
-  name: "Initial",
+  name: 'Initial',
   components: {
     TaskForm,
-    TaskCard
+    TaskCard,
   },
   data: function() {
     return {
-      isVisible: false
+      isVisible: false,
     };
   },
   methods: {
-    ...mapActions(["fetchTasks"]),
+    ...mapActions(['fetchTasks']),
     switchTaskForm: function() {
       this.isVisible = !this.isVisible;
-    }
+    },
   },
   mounted() {
     this.fetchTasks();
   },
   computed: {
-    ...mapGetters(["allTasks"])
-  }
+    ...mapGetters(['allTasks']),
+  },
 };
 </script>
 
@@ -73,7 +75,7 @@ $greenColorLight2: #c7ebdf;
   outline: none;
   &:hover {
     cursor: pointer;
-    text-shadow: 0 2px 4px rgba($greenColorLight, 1);
+    text-shadow: 0 2px 4px $grayColor;
   }
 }
 

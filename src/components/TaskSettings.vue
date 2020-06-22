@@ -8,7 +8,9 @@
       v-bind:popupMessage="'Are you sure you want delete task?'"
     />
     <div class="task-settings-title">
-      <label for="title" class="task-settings-title-label">What is task name?</label>
+      <label for="title" class="task-settings-title-label"
+        >What is task name?</label
+      >
       <input
         type="text"
         placeholder="For example: Read"
@@ -18,15 +20,25 @@
       />
     </div>
     <div class="task-settings-control-panel">
-      <button class="task-settings-control-panel-btn" @click="addNoteHandler">&crarr; Add note</button>
-      <button class="task-settings-control-panel-btn" @click="saveChanges">&#10003; Save</button>
+      <button class="task-settings-control-panel-btn" @click="addNoteHandler">
+        Add note
+      </button>
+      <button class="task-settings-control-panel-btn" @click="saveChanges">
+        Save
+      </button>
       <button
-        class="task-settings-control-panel-btn-dlt"
+        class="task-settings-control-panel-btn"
         @click="switchPopupVisible"
-      >&#10006; Delete</button>
+      >
+        Delete
+      </button>
     </div>
     <div class="task-settings-notes">
-      <div class="task-settings-notes-item" v-for="(note, index) in this.notesList" :key="index">
+      <div
+        class="task-settings-notes-item"
+        v-for="(note, index) in this.notesList"
+        :key="index"
+      >
         <input
           class="task-settings-notes-item-checkbox"
           type="checkbox"
@@ -41,66 +53,64 @@
           class="task-settings-notes-item-span"
           type="text"
           @click="removeNoteHandler(index)"
-        >&times;</span>
+          >&times;</span
+        >
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapActions, mapMutations } from "vuex";
-import Popup from "./Popup";
-import firebaseAPI from "../firebase";
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+import Popup from './Popup';
+import firebaseAPI from '../firebase';
 export default {
-  name: "TaskSettings",
+  name: 'TaskSettings',
   components: {
-    Popup
+    Popup,
   },
   data: function() {
     return {
       taskId: this.$route.path.substr(6),
       deletedNotesId: [],
-      isPopupVisible: false
+      isPopupVisible: false,
     };
   },
   computed: {
-    ...mapGetters(["currentTask"]),
+    ...mapGetters(['currentTask']),
     notesLength: {
       get: function() {
         return Object.keys(this.notesList).length;
-      }
+      },
     },
     notesList: function() {
       let notes = JSON.parse(JSON.stringify(this.currentTask));
-      delete notes["id"];
-      delete notes["title"];
+      delete notes['id'];
+      delete notes['title'];
       return notes;
-    }
+    },
   },
   methods: {
-    ...mapActions(["fetchTaskById", "removeTask"]),
-    ...mapMutations(["addNote", "removeNote"]),
+    ...mapActions(['fetchTaskById', 'removeTask']),
+    ...mapMutations(['addNote', 'removeNote']),
     addNoteHandler: function() {
       let parsedCurrentTask = JSON.parse(JSON.stringify(this.currentTask));
       let emptyNote = {};
       if (this.deletedNotesId.length === 0) {
         emptyNote[this.notesLength] = {
           noteStatus: false,
-          noteText: ""
+          noteText: '',
         };
       }
       if (this.deletedNotesId.length !== 0) {
         emptyNote[this.deletedNotesId[0]] = {
           noteStatus: false,
-          noteText: ""
+          noteText: '',
         };
         this.deletedNotesId.splice(0, 1);
       }
       let newState = Object.assign(parsedCurrentTask, emptyNote);
       this.addNote(newState);
-      // let newState = Object.assign(parsedCurrentTask);
-      // newState[Object.keys(emptyNote)[0]] = emptyNote[Object.keys(emptyNote)];
-      // this.addNote(newState);
     },
     removeNoteHandler: function(id) {
       window.a = this.deletedNotesId;
@@ -109,7 +119,7 @@ export default {
       this.removeNote(
         Object.assign(this.notesList, {
           title: this.currentTask.title,
-          id: this.taskId
+          id: this.taskId,
         })
       );
     },
@@ -120,21 +130,22 @@ export default {
         .set(
           Object.assign(this.notesList, {
             title: this.currentTask.title,
-            id: this.taskId
+            id: this.taskId,
           })
         );
+      this.$router.push('/');
     },
     switchPopupVisible: function() {
       this.isPopupVisible = !this.isPopupVisible;
     },
     callbackPopupEvent: function() {
-      this.$router.push("/");
+      this.$router.push('/');
       this.removeTask(this.currentTask.id);
-    }
+    },
   },
   created() {
     this.fetchTaskById(this.taskId);
-  }
+  },
 };
 </script>
 
@@ -170,16 +181,9 @@ $redColor: #ff4e4e;
   margin-left: 5px;
   font-size: 1.2em;
   outline: none;
-  border: 1px solid $grayColorDark;
-  border-radius: 3px;
-}
-
-.task-settings-title-button {
-  background: $redColor;
-  color: $whiteColor;
-  font-size: 0.9em;
-  height: 100%;
   border: none;
+  border-bottom: 1px solid $grayColorDark;
+  background: none;
 }
 
 .task-settings-control-panel {
@@ -190,36 +194,18 @@ $redColor: #ff4e4e;
 }
 
 .task-settings-control-panel-btn {
+  outline: none;
   margin-left: 10px;
-  height: 36px;
+  border: 1px solid $grayColorDark;
+  font-size: 0.75em;
   width: 128px;
-  background: rgba($greenColor, 0.25);
-  color: $greenColor;
-  border: none;
-  border-bottom: 3px solid $greenColor;
-  transition: 0.2s;
+  height: 36px;
   border-radius: 3px;
+  transition: 0.2s;
   &:hover {
     cursor: pointer;
+    background: $grayColorDark;
     color: $whiteColor;
-    background: $greenColor;
-  }
-}
-
-.task-settings-control-panel-btn-dlt {
-  margin-left: 10px;
-  height: 36px;
-  width: 128px;
-  background: rgba($redColor, $alpha: 0.25);
-  color: $redColor;
-  border: none;
-  border-bottom: 3px solid $redColor;
-  transition: 0.2s;
-  border-radius: 3px;
-  &:hover {
-    cursor: pointer;
-    color: $whiteColor;
-    background: $redColor;
   }
 }
 
@@ -249,6 +235,63 @@ $redColor: #ff4e4e;
       color: $redColor;
       cursor: pointer;
     }
+  }
+}
+@media all and (max-width: 768px) {
+  .task-settings-title-label {
+    font-size: 1em;
+  }
+  .task-settings-title-input {
+    font-size: 1em;
+  }
+  .task-settings-notes-item {
+    &-input {
+      width: 300px;
+    }
+    &-span {
+      font-size: 30px;
+      color: rgba($textColor, 0.5);
+      transition: 0.2s;
+      &:hover {
+        color: $redColor;
+        cursor: pointer;
+      }
+    }
+  }
+}
+@media all and (max-width: 600px) {
+  .task-settings-title-label {
+    font-size: 0.9em;
+  }
+  .task-settings-title-input {
+    font-size: 0.9em;
+  }
+  .task-settings-notes-item {
+    &-input {
+      width: 200px;
+    }
+  }
+  .task-settings-control-panel-btn {
+    width: 96px;
+  }
+}
+@media all and (max-width: 500px) {
+  .task-settings-title {
+    display: flex;
+    flex-direction: column;
+  }
+  .task-settings-notes-item-input {
+    font-size: 0.8em;
+  }
+  .header-nav-btn {
+    height: 30px;
+    font-size: 0.9em;
+    line-height: 30px;
+  }
+  .task-settings-control-panel-btn {
+    width: 64px;
+    height: 36px;
+    font-size: 0.7em;
   }
 }
 </style>

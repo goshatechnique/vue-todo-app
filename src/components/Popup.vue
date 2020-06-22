@@ -2,10 +2,12 @@
   <transition name="popup">
     <div v-if="isPopupVisible" class="overlay">
       <div class="popup-form">
-        <h2 class="popup-h2">{{this.popupHeader}}</h2>
-        <p class="popup-p">{{this.popupMessage}}</p>
+        <h2 class="popup-h2">{{ this.popupHeader }}</h2>
+        <p class="popup-p">{{ this.popupMessage }}</p>
         <div class="popup-btn-section">
-          <button class="popup-btn popup-btn-cls" @click="switchPopupVisible">No</button>
+          <button class="popup-btn popup-btn-cls" @click="switchPopupVisible">
+            No
+          </button>
           <button class="popup-btn" @click="callbackPopupEvent">Yes</button>
         </div>
       </div>
@@ -15,14 +17,14 @@
 
 <script>
 export default {
-  name: "popup",
+  name: 'popup',
   props: {
     isPopupVisible: Boolean,
     switchPopupVisible: Function,
     callbackPopupEvent: Function,
     popupHeader: String,
-    popupMessage: String
-  }
+    popupMessage: String,
+  },
 };
 </script>
 
@@ -66,12 +68,13 @@ $redColor: #fc6f6f;
 }
 
 .popup-btn {
+  outline: none;
   height: 30px;
   font-size: 0.7em;
   width: 150px;
   border: 1px solid $greenColor;
   font-size: 0.8em;
-  border-radius: 5px;
+  border-radius: 3px;
   background: $whiteColor;
   margin-top: 10px;
   margin-bottom: 10px;
@@ -91,7 +94,7 @@ $redColor: #fc6f6f;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 400px;
+  width: 360px;
   background: $whiteColor;
   box-shadow: 0 2px 4px rgba($textColor, 0.5);
 }

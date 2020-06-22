@@ -6,7 +6,8 @@
       class="header-nav-btn"
       tag="div"
       :to="'/'"
-    >Home</router-link>
+      >Home</router-link
+    >
     <div class="header-nav-btn header-nav-btn-task">Tasks:</div>
     <router-link
       v-for="task in allTasks"
@@ -17,28 +18,29 @@
       tag="div"
       :to="'/task/' + task.id"
       @click.native="fetchTaskById(task.id)"
-    >#&#8195;{{task.title}}</router-link>
+      >#&#8195;{{ task.title }}</router-link
+    >
   </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions } from 'vuex';
 export default {
-  name: "Header",
+  name: 'Header',
   components: {},
   methods: {
-    ...mapActions(["fetchTasks", "fetchTaskById"])
+    ...mapActions(['fetchTasks', 'fetchTaskById']),
   },
   computed: {
-    ...mapGetters(["allTasks"])
+    ...mapGetters(['allTasks']),
   },
   mounted() {
     this.fetchTasks();
-  }
+  },
 };
 </script>
 
-<style scoped lang='scss'>
+<style scoped lang="scss">
 $textColor: #314252;
 $whiteColor: #ffffff;
 $grayColorLight: #eeeeee;
@@ -90,7 +92,18 @@ $greenColorLight2: #c7ebdf;
     border-bottom: none;
     box-shadow: none;
     background: none;
-    border-radius: none;
+    border-radius: 0px;
+  }
+}
+
+@media all and (max-width: 768px) {
+  .header-nav-btn {
+    font-size: 1em;
+  }
+}
+@media all and (max-width: 460px) {
+  .header-nav-btn {
+    font-size: 0.9em;
   }
 }
 </style>

@@ -2,7 +2,9 @@
   <transition name="popup">
     <div v-if="isVisible" class="overlay">
       <form class="task-form" @submit.prevent="submitHandler">
-        <span @click="closeFormHandler" class="task-form-btn-close">&times;</span>
+        <span @click="closeFormHandler" class="task-form-btn-close"
+          >&times;</span
+        >
         <label class="task-form-label-header" for="title">Task name</label>
         <input
           placeholder="Example: Wake up"
@@ -11,8 +13,12 @@
           id="title"
           type="text"
         />
-        <label class="task-form-label-header task-form-label-header-notes">Notes</label>
-        <button class="task-form-btn" @click.prevent="add">Type here to add note</button>
+        <label class="task-form-label-header task-form-label-header-notes"
+          >Notes</label
+        >
+        <button class="task-form-btn" @click.prevent="add">
+          Type here to add note
+        </button>
         <NoteField
           v-for="(note, index) in notes"
           v-model="notes[index]"
@@ -26,43 +32,44 @@
 </template>
 
 <script>
-import NoteField from "./NoteField";
-import firebaseAPI from "../firebase";
+import NoteField from './NoteField';
+import Swal from 'sweetalert2';
+import firebaseAPI from '../firebase';
 export default {
   components: {
-    NoteField
+    NoteField,
   },
   props: {
     isVisible: Boolean,
-    switchTaskForm: Function
+    switchTaskForm: Function,
   },
   data: function() {
     return {
       notes: [],
-      title: ""
+      title: '',
     };
   },
   methods: {
     add() {
       this.notes.push({
-        noteText: "",
-        noteStatus: false
+        noteText: '',
+        noteStatus: false,
       });
     },
     closeFormHandler() {
       this.notes = [];
-      this.title = "";
+      this.title = '';
       this.add();
       this.switchTaskForm();
     },
     submitHandler() {
       try {
         if (!this.title) {
-          alert("Title won't be empty!");
+          Swal.fire('Warning!', "Title wont't be empty!", 'warning');
           return;
         }
         if (!this.notes[0].noteText) {
-          alert("Note won't be empty!");
+          Swal.fire('Warning!', "Note wont't be empty!", 'warning');
           return;
         }
         this.switchTaskForm();
@@ -72,16 +79,16 @@ export default {
           .ref(`tasks/${uid}`)
           .set({ title: this.title, id: uid, ...this.notes });
         this.notes = [];
-        this.title = "";
+        this.title = '';
         this.add();
       } catch (e) {
-        alert("Note won't be empty!");
+        Swal.fire('Warning!', "Note wont't be empty!", 'warning');
       }
-    }
+    },
   },
   mounted() {
     this.add();
-  }
+  },
 };
 </script>
 
@@ -112,7 +119,7 @@ $redColor: #fc6f6f;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 400px;
+  width: 360px;
   background: $whiteColor;
   box-shadow: 0 2px 4px rgba($textColor, 0.5);
 }
@@ -125,7 +132,6 @@ $redColor: #fc6f6f;
   width: 300px;
   font-size: 0.7em;
   box-sizing: border-box;
-  border-radius: 5px;
   box-shadow: 0 2px 4px rgba($textColor, 0.5);
 }
 
@@ -142,12 +148,13 @@ $redColor: #fc6f6f;
 }
 
 .task-form-btn {
+  outline: none;
   height: 30px;
   font-size: 0.7em;
   width: 300px;
   border: 1px solid $greenColor;
   font-size: 0.8em;
-  border-radius: 5px;
+  border-radius: 3px;
   background: $whiteColor;
   margin-top: 10px;
   margin-bottom: 10px;
