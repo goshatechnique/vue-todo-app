@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>{{this.currentTask.title}}</h2>
-    <div v-for="(note, index) in this.currentNotes" :key="index">
+    <div v-for="(note, index) in this.notesList" :key="index">
       <input type="text" v-model="currentTask[index].noteText" />
       <span @click="removeNoteHandler(index)">&times;</span>
     </div>
@@ -15,12 +15,18 @@ export default {
   name: "TaskSettings",
   data: function() {
     return {
-      taskId: this.$route.path.substr(6)
+      taskId: this.$route.path.substr(6),
+      deletedNotesId: []
     };
   },
   computed: {
     ...mapGetters(["currentTask"]),
-    currentNotes: function() {
+    notesLength: {
+      get: function() {
+        return Object.keys(this.notesList).length;
+      }
+    },
+    notesList: function() {
       let notes = JSON.parse(JSON.stringify(this.currentTask));
       delete notes["id"];
       delete notes["title"];
@@ -31,22 +37,33 @@ export default {
     ...mapActions(["fetchTaskById"]),
     ...mapMutations(["addNote", "removeNote"]),
     addNoteHandler: function() {
-      let a = JSON.parse(JSON.stringify(this.currentTask));
-      let b = {};
-      b[Object.keys(this.currentNotes).length] = {
-        noteStatus: false,
-        noteText: ""
-      };
-      let c = Object.assign(a, b);
-      this.addNote(Object.assign(a, b));
+      let parsedCurrentTask = JSON.parse(JSON.stringify(this.currentTask));
+      let emptyNote = {};
+      if (this.deletedNotesId.length === 0) {
+        emptyNote[this.notesLength] = {
+          noteStatus: false,
+          noteText: ""
+        };
+      }
+      if (this.deletedNotesId.length !== 0) {
+        emptyNote[this.deletedNotesId[0]] = {
+          noteStatus: false,
+          noteText: ""
+        };
+        this.deletedNotesId.splice(0, 1);
+      }
+      let newState = Object.assign(parsedCurrentTask, emptyNote);
+      this.addNote(newState);
     },
     removeNoteHandler: function(id) {
-      console.log(id);
-      delete this.currentNotes[id];
-      this.removeNote(this.currentNotes);
+      window.a = this.deletedNotesId;
+      delete this.notesList[id];
+      this.deletedNotesId.push(id);
+      // this.deletedNotesId.sort();
+      this.removeNote(this.notesList);
     }
   },
-  created() {
+  mounted() {
     this.fetchTaskById(this.taskId);
   }
 };

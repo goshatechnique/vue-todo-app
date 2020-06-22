@@ -35,6 +35,12 @@ export default {
         .database()
         .ref(`/tasks/${id}`)
         .on('value', (snapshot) => {
+          // let snapshotKeys = Object.keys(snapshot.val());
+          // let snapshotValues = Object.values(snapshot.val());
+          // let currentTask = [];
+          // snapshotKeys.forEach((key, index) =>
+          //   currentTask.push(snapshotValues[index])
+          // );
           commit('updateCurrentTask', snapshot.val());
         });
     },
